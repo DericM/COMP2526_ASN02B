@@ -5,7 +5,6 @@ import ca.bcit.comp2526.a2b.SpawnType;
 
 import java.awt.Color;
 
-
 @SuppressWarnings("serial")
 public class Herbivore extends Movable {
 
