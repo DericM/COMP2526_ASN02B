@@ -23,9 +23,9 @@ public abstract class Tile extends JPanel {
     /* The Cell containing this Tile. */
     private Cell cell;
     
-    private SpawnType type;
+    protected SpawnType type;
 
-    private boolean alive;
+
     /**
      * Constructor.
      * 
@@ -36,17 +36,11 @@ public abstract class Tile extends JPanel {
      */
     Tile(Cell cell, Color cl) {
         color = cl;
+        setBackground(color);
         this.cell = cell;
         cell.setTile(this);
-        init();
     }
 
-    /**
-     * Sets the background color.
-     */
-    public void init() {
-        setBackground(color);
-    }
 
     /**
      * Returns a random shade of color c.
@@ -83,20 +77,24 @@ public abstract class Tile extends JPanel {
     }
 
     
-    public boolean isAlive(){
-        return alive;
+    
+    /**
+     * Check if a Tile tile can be eaten.
+     * 
+     * @param tile
+     *            the tile to be eaten.
+     * @return True if the tile can be eaten, False if not.
+     */
+    public abstract boolean eat(Tile tile);
+    
+    
+    
+    public boolean mate(Tile tile){
+        if(type == tile.getType()){
+            return true;
+        }
+        return false;
     }
-    public void setStatus(boolean living){
-        alive = living;
-    }
-    public void kill(){
-        alive = false;
-    }
-    
-    
-    
-    
-    
     
     
     
@@ -131,13 +129,8 @@ public abstract class Tile extends JPanel {
         return type;
     }
     
+    
+    
+    
 
-    /**
-     * Check if a Tile tile can be eaten.
-     * 
-     * @param tile
-     *            the tile to be eaten.
-     * @return True if the tile can be eaten, False if not.
-     */
-    public abstract boolean eat(Tile tile);
 }

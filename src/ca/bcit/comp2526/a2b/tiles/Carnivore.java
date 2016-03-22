@@ -1,24 +1,25 @@
 package ca.bcit.comp2526.a2b.tiles;
 
 import ca.bcit.comp2526.a2b.Cell;
-import ca.bcit.comp2526.a2b.interfaces.EatenByCarnivore;
+import ca.bcit.comp2526.a2b.SpawnType;
 
 import java.awt.Color;
 
 @SuppressWarnings("serial")
 public class Carnivore extends Movable{
 
-    /** The default movements. */
-    private static final int defaultMovement = 5;
     /** Randomly generated shade of yellow. */
-    private static final Color defaultColor = Color.red;
+    private static final Color defaultColor = Color.magenta;
     
+    private static final int defaultLife = 3;
     /**
      * Constructor.
      * @param cell the cell to place the Carnivore inside of.
      */
     public Carnivore(Cell cell) {
-        super(cell, newShade(defaultColor), defaultMovement);
+        super(cell, newShade(defaultColor), defaultLife);
+        setType(SpawnType.CARNIVORE);
+        life = defaultLife;
     }
 
     /**
@@ -27,10 +28,20 @@ public class Carnivore extends Movable{
      */
     @Override
     public boolean eat(Tile tile) {
-        if (tile instanceof EatenByCarnivore) {
+        if(tile == null){
+            return false;
+        }
+        if (tile.getType() == SpawnType.HERBIVORE) {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void procreate() {
+        if(mate.size() >= 1 && blank.size() >= 3 && prey.size() >= 3) {
+            SpawnType.spawnSingle(pickCell(blank), SpawnType.CARNIVORE);
+        }
     }
     
 }

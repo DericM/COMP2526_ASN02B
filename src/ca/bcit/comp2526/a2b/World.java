@@ -1,11 +1,8 @@
 package ca.bcit.comp2526.a2b;
 
 import java.util.ArrayList;
+import ca.bcit.comp2526.a2b.tiles.Living;
 
-import ca.bcit.comp2526.a2b.tiles.Carnivore;
-import ca.bcit.comp2526.a2b.tiles.Herbivore;
-import ca.bcit.comp2526.a2b.tiles.Movable;
-import ca.bcit.comp2526.a2b.tiles.Plant;
 
 /**
  * Represents a World that contains a grid of Cells. Contains a list of movable
@@ -24,7 +21,7 @@ public class World {
     /* A grid of cells that can contain tiles. */
     private Cell[][] cells;
     /* A List of movable tiles contained by cells in the grid. */
-    private ArrayList<Movable> moveable;
+    private ArrayList<Living> living;
 
     /**
      * builds a new world with a width and height.
@@ -38,44 +35,33 @@ public class World {
         cols = width;
         rows = height;
         cells = new Cell[cols][rows];
-        moveable = new ArrayList<Movable>();
+        living = new ArrayList<Living>();
     }
 
     /**
      * Initialize the world, creates cells, spawns Tiles.
      */
     public void init() {
+        SpawnType.init(living);
         Cell cell;
         for (int i = 0; i < cols; i++) {
             for (int j = 0; j < rows; j++) {
                 cell = new Cell(i, j, this);
                 cells[i][j] = cell;
-                cell.init();
-                spawn(cell);
+                SpawnType.spawnRand(cell);
             }
         }
+        for (int i = 0; i < cols; i++) {
+            for (int j = 0; j < rows; j++) {
+                cells[i][j].init();
+            }
+        }
+        
+        
+        
     }
 
-    /*
-     * Spawns a Random tile. See SpawnType for spawn rates.
-     * 
-     * @param c the cell in which to spawn the tile.
-     */
-    private void spawn(Cell cell) {
-        switch (SpawnType.spawn()) {
-          case PLANT:
-              new Plant(cell);
-              break;
-          case HERBIVORE:
-              moveable.add(new Herbivore(cell));
-              break;
-          case CARNIVORE:
-              moveable.add(new Carnivore(cell));
-              break;
-          default:
-              break;// blank
-        }
-    }
+
 
     /*
      * Gets all the empty cells and pick one at random.
@@ -114,16 +100,31 @@ public class World {
      * remove it from the movable list.
      */
     public void takeTurn() {
-        Movable mov;
-        for (int i = 0; i < moveable.size(); i++) {
-            mov = moveable.get(i);
-            if (mov == null || !mov.takeTurn()) {
-                moveable.remove(i);
+        Living liv;
+        System.out.println(living.size());
+        for (int i = 0; i < living.size(); i++) {
+            
+            liv = living.get(i);
+            if(liv.isAlive()){
+                living.remove(liv);
+                liv.getCell().setTile(null);
             }
+            if(liv != null){
+                liv.takeTurn();
+            }
+            
         }
-        spawn(getRandomEmptyCell());
+        SpawnType.spawnRand(getRandomEmptyCell());
     }
-
+    
+    
+    public void addToLiving(Living liv){
+        living.add(liv);
+    }
+    
+    
+    
+    
     /**
      * returns the number of rows.
      * 

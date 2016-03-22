@@ -1,15 +1,17 @@
 package ca.bcit.comp2526.a2b.tiles;
 
 import ca.bcit.comp2526.a2b.Cell;
-import ca.bcit.comp2526.a2b.interfaces.EatenByHerbivore;
+import ca.bcit.comp2526.a2b.SpawnType;
 
 import java.awt.Color;
 
 @SuppressWarnings("serial")
-public class Plant extends Tile implements EatenByHerbivore {
+public class Plant extends Living {
     
     /** Randomly generated shade of green. */
     private static final Color defaultColor = Color.green;
+    
+    private static final int defaultLife = 10;
     
     /**
      * Constructor.
@@ -17,6 +19,10 @@ public class Plant extends Tile implements EatenByHerbivore {
      */
     public Plant(Cell cell) {
         super(cell, newShade(defaultColor));
+        setType(SpawnType.HERBIVORE);
+        
+        life = defaultLife;
+        
     }
 
     /**
@@ -27,5 +33,15 @@ public class Plant extends Tile implements EatenByHerbivore {
     public boolean eat(Tile tile) {
         return false;
     }
+
+    @Override
+    public void procreate() {
+        if(mate.size() >= 3 && blank.size() >= 2) {
+            SpawnType.spawnSingle(pickCell(blank), SpawnType.PLANT);
+        }
+    }
+
+
+
 
 }

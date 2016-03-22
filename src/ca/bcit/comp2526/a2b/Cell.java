@@ -30,6 +30,14 @@ public class Cell extends JPanel {
     /** The tile contained in the cell. */
     private Tile tile;
 
+    
+    private ArrayList<Cell> adj;
+    
+    
+    
+    
+    
+    
     /**
      * Construct a new cell.
      * 
@@ -53,43 +61,11 @@ public class Cell extends JPanel {
     public void init() {
         setLayout(new GridLayout(1, 1));
         setBorder(BorderFactory.createLineBorder(Color.black));
-    }
-
-    /**
-     * Returns the most desirable adjacent cell.
-     * 
-     * @return the most desirable cell.
-     */
-    public Cell targetCell() {
-        ArrayList<Cell> prey = new ArrayList<Cell>();
-        ArrayList<Cell> pred = new ArrayList<Cell>();
-        ArrayList<Cell> blank = new ArrayList<Cell>();
-        ArrayList<Cell> mate = new ArrayList<Cell>();
-        ArrayList<Cell> adj;
-
         adj = getAdjecentCells();
-
-        for (Cell cell : adj) {
-            if (cell.getTile() == null) {
-                blank.add(cell);
-            } else if (cell.tileCanEat(tile)) {
-                pred.add(cell);
-            } else if (tileCanEat(cell.getTile())) {
-                prey.add(cell);
-            } else {
-                mate.add(cell);
-            }
-        }
-
-        if (prey.size() != 0) {
-            return pickCell(prey);
-        }
-        if (blank.size() != 0) {
-            return pickCell(blank);
-        }
-
-        return null;
     }
+    
+    
+
 
     /*
      * Returns a list of adjacent tiles.
@@ -111,19 +87,7 @@ public class Cell extends JPanel {
         return adj;
     }
 
-    /*
-     * Pick a random cell from a list of cells.
-     * 
-     * @param cells the list to chose from.
-     * 
-     * @return the chosen cell.
-     */
-    private Cell pickCell(ArrayList<Cell> cells) {
-        if (cells == null) {
-            return null;
-        }
-        return cells.get(RandomGenerator.nextNumber(cells.size()));
-    }
+
 
 
     /*
@@ -137,8 +101,12 @@ public class Cell extends JPanel {
      * @return True if cell exists, false if not.
      */
     private boolean cellExists(int col, int row) {
-        return !(col < 0 || row < 0 || col >= world.getRowCount() || row >= world.getColumnCount()
-                || (col == this.col && row == this.row));
+        return !(col < 0 
+                || row < 0 
+                || col >= world.getRowCount() 
+                || row >= world.getColumnCount()
+                || (col == this.col && row == this.row)
+                );
     }
 
     /**
@@ -148,11 +116,11 @@ public class Cell extends JPanel {
      *            the tile that will get eaten.
      * @return True if it can be eaten, False if not.
      */
-    public boolean tileCanEat(Tile ti) {
-        if (tile == null) {
+    public boolean eat(Tile tile) {
+        if (this.tile == null) {
             return false;
         }
-        return tile.eat(ti);
+        return this.tile.eat(tile);
     }
 
     /**
@@ -179,6 +147,17 @@ public class Cell extends JPanel {
         revalidate();
     }
 
+    
+    public ArrayList<Cell> getAdjCells(){
+        return adj;
+    }
+    
+    public World getWorld() {
+        return world;
+    }
+    
+    
+    
     /**
      * Returns a Point with the coordinates of the cell.
      * 
