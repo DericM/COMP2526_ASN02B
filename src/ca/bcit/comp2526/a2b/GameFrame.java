@@ -2,6 +2,7 @@ package ca.bcit.comp2526.a2b;
 
 import java.awt.GridLayout;
 import javax.swing.JFrame;
+import javax.swing.Timer;
 
 /**
  * GameFrame.
@@ -11,16 +12,19 @@ import javax.swing.JFrame;
 @SuppressWarnings("serial")
 public class GameFrame extends JFrame {
     private final World world;
+    private Timer timer;
 
     public GameFrame(final World wo) {
         world = wo;
+        timer = new Timer(50, new TurnTimer(this));
+        timer.start();
     }
 
     /**
      * Initialize.
      */
     public void init() {
-        setTitle("Assignment 2a");
+        setTitle("Assignment 2b");
         setLayout(new GridLayout(world.getRowCount(),
                                  world.getColumnCount()));
 

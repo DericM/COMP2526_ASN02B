@@ -1,7 +1,7 @@
 package ca.bcit.comp2526.a2b.tiles;
 
 import ca.bcit.comp2526.a2b.Cell;
-import ca.bcit.comp2526.a2b.SpawnType;
+import ca.bcit.comp2526.a2b.SpawnPool;
 
 import java.awt.Color;
 
@@ -17,9 +17,8 @@ public class Carnivore extends Movable{
      * @param cell the cell to place the Carnivore inside of.
      */
     public Carnivore(Cell cell) {
-        super(cell, newShade(defaultColor), defaultLife);
-        setType(SpawnType.CARNIVORE);
-        life = defaultLife;
+        super(cell, defaultColor, defaultLife);
+        setType(SpawnPool.CARNIVORE);
     }
 
     /**
@@ -27,11 +26,12 @@ public class Carnivore extends Movable{
      * @param t the tile to be eaten.
      */
     @Override
-    public boolean eat(Tile tile) {
+    public boolean canEat(Tile tile) {
         if(tile == null){
             return false;
         }
-        if (tile.getType() == SpawnType.HERBIVORE) {
+        if (tile.getType() == SpawnPool.HERBIVORE
+                ||tile.getType() == SpawnPool.OMNIVORE) {
             return true;
         }
         return false;
@@ -40,7 +40,7 @@ public class Carnivore extends Movable{
     @Override
     public void procreate() {
         if(mate.size() >= 1 && blank.size() >= 3 && prey.size() >= 3) {
-            SpawnType.spawnSingle(pickCell(blank), SpawnType.CARNIVORE);
+            SpawnPool.spawn(pickCell(blank), SpawnPool.CARNIVORE);
         }
     }
     

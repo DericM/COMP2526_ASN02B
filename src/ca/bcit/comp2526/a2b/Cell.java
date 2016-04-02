@@ -120,7 +120,7 @@ public class Cell extends JPanel {
         if (this.tile == null) {
             return false;
         }
-        return this.tile.eat(tile);
+        return this.tile.canEat(tile);
     }
 
     /**

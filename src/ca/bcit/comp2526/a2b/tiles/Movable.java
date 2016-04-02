@@ -14,10 +14,7 @@ import java.awt.Color;
 @SuppressWarnings("serial")
 public abstract class Movable extends Living {
 
-    private int refill;
-    /** Label to display life and location. */
     
-
     /**
      * Constructor.
      * 
@@ -29,8 +26,7 @@ public abstract class Movable extends Living {
      *            the number of life points.
      */
     Movable(Cell cell, Color color, int life) {
-        super(cell, color);
-        refill = life;
+        super(cell, color, life);
         
     }
 
@@ -41,43 +37,14 @@ public abstract class Movable extends Living {
      * @return True if the tile moved, false if not.
      */
     public void takeTurn() {
-        super.takeTurn();
-        System.out.println(life);
-        Cell target = targetCell();
-
-        if (target != null) {
-            if (eat(target.getTile())) {
-                life = refill;
-                ((Living) target.getTile()).kill();
-            }
-            move(target);
-            
-        }
-        printLable();
         
-    }
+        super.takeTurn();
 
-
-
-    
-    
-    /**
-     * Returns the most desirable adjacent cell.
-     * 
-     * @return the most desirable cell.
-     */
-    public Cell targetCell() {
-        if (prey.size() != 0) {
-            return pickCell(prey);
-        }
-        if (blank.size() != 0) {
-            return pickCell(blank);
-        }
-
-        return null;
+        move();
+        
+        repaint();
     }
     
-
     
     
     /*
@@ -85,7 +52,23 @@ public abstract class Movable extends Living {
      * 
      * @param target cell to move to.
      */
-    private void move(Cell target) {
+    private void move() {
+        Cell target;
+        if (prey.size() > 0) {
+            target = pickCell(prey);
+        }
+        else if (blank.size() > 0) {
+            target = pickCell(blank);
+        }
+        else {
+            return;
+        }
+        
+        if (canEat(target.getTile())) {
+            resetLife();
+            target.getTile().kill();
+        }
+        
         getCell().setTile(null);
         target.setTile(this);
         setCell(target);

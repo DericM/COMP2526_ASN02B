@@ -1,7 +1,7 @@
 package ca.bcit.comp2526.a2b.tiles;
 
 import ca.bcit.comp2526.a2b.Cell;
-import ca.bcit.comp2526.a2b.SpawnType;
+import ca.bcit.comp2526.a2b.SpawnPool;
 
 import java.awt.Color;
 
@@ -9,17 +9,16 @@ import java.awt.Color;
 public class Omnivore extends Movable{
 
     /** Randomly generated shade of yellow. */
-    private static final Color defaultColor = Color.blue;
+    private static final Color defaultColor = Color.orange;
     
-    private static final int defaultLife = 2;
+    private static final int defaultLife = 10;
     /**
      * Constructor.
      * @param cell the cell to place the Carnivore inside of.
      */
     public Omnivore(Cell cell) {
-        super(cell, newShade(defaultColor), defaultLife);
-        setType(SpawnType.OMNIVORE);
-        life = defaultLife;
+        super(cell, defaultColor, defaultLife);
+        setType(SpawnPool.OMNIVORE);
     }
 
     /**
@@ -27,13 +26,12 @@ public class Omnivore extends Movable{
      * @param t the tile to be eaten.
      */
     @Override
-    public boolean eat(Tile tile) {
+    public boolean canEat(Tile tile) {
         if(tile == null){
             return false;
         }
-        if (tile.getType() == SpawnType.HERBIVORE 
-                || tile.getType() == SpawnType.CARNIVORE
-                || tile.getType() == SpawnType.PLANT) {
+        if (tile.getType() == SpawnPool.HERBIVORE 
+                || tile.getType() == SpawnPool.PLANT) {
             return true;
         }
         return false;
@@ -42,7 +40,7 @@ public class Omnivore extends Movable{
     @Override
     public void procreate() {
         if(mate.size() >= 1 && blank.size() >= 3 && prey.size() >= 3) {
-            SpawnType.spawnSingle(pickCell(blank), SpawnType.OMNIVORE);
+            SpawnPool.spawn(pickCell(blank), SpawnPool.OMNIVORE);
         }
     }
     

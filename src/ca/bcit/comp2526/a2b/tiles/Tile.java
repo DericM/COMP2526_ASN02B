@@ -2,7 +2,7 @@ package ca.bcit.comp2526.a2b.tiles;
 
 import ca.bcit.comp2526.a2b.Cell;
 import ca.bcit.comp2526.a2b.RandomGenerator;
-import ca.bcit.comp2526.a2b.SpawnType;
+import ca.bcit.comp2526.a2b.SpawnPool;
 
 import java.awt.Color;
 import javax.swing.JPanel;
@@ -20,12 +20,16 @@ public abstract class Tile extends JPanel {
 
     /* The color of the Tile. */
     private Color color;
+    
+    private Color currentcolor;
     /* The Cell containing this Tile. */
     private Cell cell;
     
-    protected SpawnType type;
+    private SpawnPool type;
 
-
+    private boolean alive;
+    
+    
     /**
      * Constructor.
      * 
@@ -35,10 +39,26 @@ public abstract class Tile extends JPanel {
      *            the color of this tile.
      */
     Tile(Cell cell, Color cl) {
-        color = cl;
+        color = currentcolor = cl;
+        alive = true;
         setBackground(color);
         this.cell = cell;
         cell.setTile(this);
+    }
+    
+            
+    public void setColorByLife(int maxLife, int currentLife) {
+        
+        double power = currentLife;
+        
+        if(power > 15)
+            power = 15;
+        
+        int red = (int)(color.getRed() * Math.pow(0.9, power));
+        int green = (int)(color.getGreen() * Math.pow(0.9, power));
+        int blue = (int)(color.getBlue() * Math.pow(0.9, power));
+        currentcolor = new Color(red, green, blue);
+        setBackground(currentcolor);
     }
 
 
@@ -49,10 +69,10 @@ public abstract class Tile extends JPanel {
      *            Color to retrieve the shade from.
      * @return the new shade of color c.
      */
-    public static Color newShade(Color cell) {
-        int red = randrgb(cell.getRed(), 50);
-        int green = randrgb(cell.getGreen(), 50);
-        int blue = randrgb(cell.getBlue(), 50);
+    public static Color newShade(Color color) {
+        int red = randrgb(color.getRed(), 50);
+        int green = randrgb(color.getGreen(), 50);
+        int blue = randrgb(color.getBlue(), 50);
         return new Color(red, green, blue);
     }
 
@@ -76,6 +96,9 @@ public abstract class Tile extends JPanel {
         return rgb;
     }
 
+
+    
+
     
     
     /**
@@ -85,7 +108,25 @@ public abstract class Tile extends JPanel {
      *            the tile to be eaten.
      * @return True if the tile can be eaten, False if not.
      */
-    public abstract boolean eat(Tile tile);
+    public abstract boolean canEat(Tile tile);
+    
+    public abstract void procreate();
+    
+    
+    public void takeTurn(){
+        return;
+    }
+    
+    
+    public boolean isAlive(){
+        return alive;
+    }
+    
+    
+    public void kill(){
+        alive = false;
+    }
+    
     
     
     
@@ -120,12 +161,12 @@ public abstract class Tile extends JPanel {
     
     
     
-    public void setType(SpawnType type) {
+    public void setType(SpawnPool type) {
         this.type = type;
     }
     
     
-    public SpawnType getType() {
+    public SpawnPool getType() {
         return type;
     }
     

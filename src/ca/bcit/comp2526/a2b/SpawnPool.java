@@ -4,9 +4,10 @@ import java.util.ArrayList;
 
 import ca.bcit.comp2526.a2b.tiles.Carnivore;
 import ca.bcit.comp2526.a2b.tiles.Herbivore;
-import ca.bcit.comp2526.a2b.tiles.Living;
 import ca.bcit.comp2526.a2b.tiles.Omnivore;
 import ca.bcit.comp2526.a2b.tiles.Plant;
+import ca.bcit.comp2526.a2b.tiles.Tile;
+import ca.bcit.comp2526.a2b.tiles.Water;
 
 /**
  * SpawnType for each possible tile type in the world.
@@ -14,12 +15,11 @@ import ca.bcit.comp2526.a2b.tiles.Plant;
  * @author Deric
  *
  */
-public enum SpawnType {
-    PLANT(30), HERBIVORE(10), CARNIVORE(5), OMNIVORE(2), NULL(53);
+public enum SpawnPool {
+    PLANT(20), HERBIVORE(20), CARNIVORE(10), OMNIVORE(10), WATER(1), NULL(40);
 
-    private static final int poolSize = 100;
-    private static ArrayList<SpawnType> spawnPool = new ArrayList<SpawnType>();
-    private static ArrayList<Living> living;
+    private static ArrayList<SpawnPool> spawnPool = new ArrayList<SpawnPool>();
+    private static ArrayList<Tile> takesTurn;
     
     private int tickets;
     
@@ -28,7 +28,7 @@ public enum SpawnType {
      * Constructor.
      * @param tickets for each SpawnType.
      */
-    SpawnType(int tickets) {
+    SpawnPool(int tickets) {
         this.tickets = tickets;
     }
     
@@ -37,9 +37,9 @@ public enum SpawnType {
     /*
      * Adds the SpawnTypes to the SpawnPool.
      */
-    public static void init(ArrayList<Living> liv) {
-        living = liv;
-        for (SpawnType st:values()) {
+    public static void init(ArrayList<Tile> liv) {
+        takesTurn = liv;
+        for (SpawnPool st:values()) {
             for (int i = 0;i < st.tickets;i++) {
                 spawnPool.add(st);
             }
@@ -52,16 +52,10 @@ public enum SpawnType {
     }
     
     
-    public static void spawnSingle(Cell cell, SpawnType type) {
-        SpawnType stype = spawnPool.get(drawTicket());
-        if(stype == type) {
-            spawn(cell, stype);
-        }
-    }
 
     
     public static int drawTicket() {
-        int rand = RandomGenerator.nextNumber(poolSize - 1);
+        int rand = RandomGenerator.nextNumber(spawnPool.size() - 1);
         return rand;
     }
     
@@ -73,8 +67,8 @@ public enum SpawnType {
      * 
      * @param c the cell in which to spawn the tile.
      */
-    public static void spawn(Cell cell, SpawnType type) {
-        Living newLife;
+    public static void spawn(Cell cell, SpawnPool type) {
+        Tile newLife;
         switch (type) {
           case PLANT:
               newLife = new Plant(cell);
@@ -88,10 +82,13 @@ public enum SpawnType {
           case OMNIVORE:
               newLife = new Omnivore(cell);
               break;
+          case WATER:
+              newLife = new Water(cell);
+              break;
           default:
               return;
         }
-        living.add(newLife);
+        takesTurn.add(newLife);
     }
 
 }

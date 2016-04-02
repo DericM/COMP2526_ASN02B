@@ -1,7 +1,7 @@
 package ca.bcit.comp2526.a2b.tiles;
 
 import ca.bcit.comp2526.a2b.Cell;
-import ca.bcit.comp2526.a2b.SpawnType;
+import ca.bcit.comp2526.a2b.SpawnPool;
 
 import java.awt.Color;
 
@@ -11,18 +11,16 @@ public class Plant extends Living {
     /** Randomly generated shade of green. */
     private static final Color defaultColor = Color.green;
     
-    private static final int defaultLife = 10;
+    private static final int defaultLife = 1;
     
     /**
      * Constructor.
      * @param c the cell to place the plant.
      */
     public Plant(Cell cell) {
-        super(cell, newShade(defaultColor));
-        setType(SpawnType.HERBIVORE);
-        
-        life = defaultLife;
-        
+        super(cell, defaultColor, defaultLife);
+        setType(SpawnPool.PLANT);
+        setGrowth(-1);
     }
 
     /**
@@ -30,18 +28,15 @@ public class Plant extends Living {
      * @param t the tile to be eaten.
      */
     @Override
-    public boolean eat(Tile tile) {
+    public boolean canEat(Tile tile) {
         return false;
     }
 
+    
     @Override
     public void procreate() {
-        if(mate.size() >= 3 && blank.size() >= 2) {
-            SpawnType.spawnSingle(pickCell(blank), SpawnType.PLANT);
+        if(mate.size() >= 1 && blank.size() >= 3 && getLife() >= 10) {
+            SpawnPool.spawn(pickCell(blank), SpawnPool.PLANT);
         }
     }
-
-
-
-
 }

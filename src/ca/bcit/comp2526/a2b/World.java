@@ -1,7 +1,7 @@
 package ca.bcit.comp2526.a2b;
 
 import java.util.ArrayList;
-import ca.bcit.comp2526.a2b.tiles.Living;
+import ca.bcit.comp2526.a2b.tiles.Tile;
 
 
 /**
@@ -21,8 +21,8 @@ public class World {
     /* A grid of cells that can contain tiles. */
     private Cell[][] cells;
     /* A List of movable tiles contained by cells in the grid. */
-    private ArrayList<Living> living;
-
+    private ArrayList<Tile> takesTurns;
+    
     /**
      * builds a new world with a width and height.
      * 
@@ -35,20 +35,20 @@ public class World {
         cols = width;
         rows = height;
         cells = new Cell[cols][rows];
-        living = new ArrayList<Living>();
+        takesTurns = new ArrayList<Tile>();
     }
 
     /**
      * Initialize the world, creates cells, spawns Tiles.
      */
     public void init() {
-        SpawnType.init(living);
+        SpawnPool.init(takesTurns);
         Cell cell;
         for (int i = 0; i < cols; i++) {
             for (int j = 0; j < rows; j++) {
                 cell = new Cell(i, j, this);
                 cells[i][j] = cell;
-                SpawnType.spawnRand(cell);
+                SpawnPool.spawnRand(cell);
             }
         }
         for (int i = 0; i < cols; i++) {
@@ -100,27 +100,40 @@ public class World {
      * remove it from the movable list.
      */
     public void takeTurn() {
-        Living liv;
-        System.out.println(living.size());
-        for (int i = 0; i < living.size(); i++) {
-            
-            liv = living.get(i);
-            if(liv.isAlive()){
-                living.remove(liv);
+        Tile liv;
+        int size;
+        System.out.println("--------"+takesTurns.size());
+        
+        for (int i = 0; i < takesTurns.size(); i++) {
+            liv = takesTurns.get(i);
+            if(!liv.isAlive()){
+                takesTurns.remove(i);
+                i--;
                 liv.getCell().setTile(null);
             }
-            if(liv != null){
+        }
+        
+
+        
+        size = takesTurns.size();
+        for (int i = 0; i < size; i++) {
+            liv = takesTurns.get(i);
+            if(!liv.isAlive()){
+                takesTurns.remove(i);
+                liv.getCell().setTile(null);
+                size--;
+            }
+            else{
                 liv.takeTurn();
             }
-            
         }
-        SpawnType.spawnRand(getRandomEmptyCell());
+        
+        
+        
+        
+        SpawnPool.spawnRand(getRandomEmptyCell());
     }
     
-    
-    public void addToLiving(Living liv){
-        living.add(liv);
-    }
     
     
     
