@@ -1,0 +1,11 @@
+
+New entities:
+1) Water: A stationary tile that spawns plants around it.
+
+Modified spawn rates for the following entities:
+1)Plant:      (mate.size() >= 1 && blank.size() >= 3                     && getLife() >= 10)
+2)Herbivore:  (mate.size() >= 1 && blank.size() >= 2 && prey.size() >= 3 && getLife() >= 5 )
+3)Omnivore:   (mate.size() >= 1 && blank.size() >= 3 && prey.size() >= 3                   )
+4)Carnivore:  (mate.size() >= 1 && blank.size() >= 3 && prey.size() >= 3                   )
+
+Plants grow instead of lose life.

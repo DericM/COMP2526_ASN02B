@@ -1,41 +1,44 @@
 package ca.bcit.comp2526.a2b.tiles;
 
-import java.awt.Color;
-import java.util.ArrayList;
-
 import ca.bcit.comp2526.a2b.Cell;
 import ca.bcit.comp2526.a2b.RandomGenerator;
 
-@SuppressWarnings("serial")
-public abstract class Aware extends Tile{
+import java.awt.Color;
+import java.util.ArrayList;
 
-    
+
+
+@SuppressWarnings("serial")
+public abstract class Aware extends Entity {
+
     protected ArrayList<Cell> prey;
-    private   ArrayList<Cell> pred;
+    private ArrayList<Cell> pred;
     protected ArrayList<Cell> blank;
     protected ArrayList<Cell> mate;
-    private   ArrayList<Cell> obst;
-    
-    
+    private ArrayList<Cell> obst;
+
     public Aware(Cell cell, Color cl) {
         super(cell, cl);
     }
-    
-    public void takeTurn(){
-        
+
+    /**
+     * Takes a turn for this Aware entity. 
+     */
+    public void takeTurn() {
+
         super.takeTurn();
-        
-        if(isAlive()){
+
+        if (isAlive()) {
             evaluateSurroundings();
-            
+
             procreate();
-            evaluateSurroundings();
             
+
         }
-        
+
     }
-    
-    /*
+
+    /**
      * Pick a random cell from a list of cells.
      * 
      * @param cells the list to chose from.
@@ -48,38 +51,36 @@ public abstract class Aware extends Tile{
         cells.remove(index);
         return cell;
     }
-    
+
     /**
      * Returns the most desirable adjacent cell.
-     * 
-     * @return the most desirable cell.
      */
-    private void evaluateSurroundings() {
-        ArrayList<Cell> adj = getCell().getAdjCells();
+    public void evaluateSurroundings() {
         prey = new ArrayList<Cell>();
         pred = new ArrayList<Cell>();
         blank = new ArrayList<Cell>();
         mate = new ArrayList<Cell>();
         obst = new ArrayList<Cell>();
 
+        ArrayList<Cell> adj = getCell().getAdjCells();
+        
         for (Cell cell : adj) {
+            
+            //System.out.println(cell.getTile().getType());
+            
+            
             if (cell.getTile() == null) {
                 blank.add(cell);
             } else if (cell.getTile().canEat(this)) {
                 pred.add(cell);
             } else if (canEat(cell.getTile())) {
                 prey.add(cell);
-            } else if (mate(cell.getTile())){
+            } else if (mate(cell.getTile())) {
                 mate.add(cell);
-            }
-            else {
+            } else {
                 obst.add(cell);
             }
         }
     }
-    
-    public void removeBlank(Cell cell){
-        blank.remove(blank.indexOf(cell));
-    }
-    
+
 }

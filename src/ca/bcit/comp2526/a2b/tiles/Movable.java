@@ -12,9 +12,8 @@ import java.awt.Color;
  * @version 1.0
  */
 @SuppressWarnings("serial")
-public abstract class Movable extends Living {
+public abstract class Movable extends Mortal {
 
-    
     /**
      * Constructor.
      * 
@@ -27,26 +26,23 @@ public abstract class Movable extends Living {
      */
     Movable(Cell cell, Color color, int life) {
         super(cell, color, life);
-        
+
     }
 
     /**
      * Takes a turn for this Movable tile. Moves the tile if it can. Remove the
      * tile if it is dead.
-     * 
-     * @return True if the tile moved, false if not.
      */
     public void takeTurn() {
-        
+
         super.takeTurn();
 
+        evaluateSurroundings();
         move();
-        
+
         repaint();
     }
-    
-    
-    
+
     /*
      * Moves the cell to a target cell.
      * 
@@ -56,23 +52,17 @@ public abstract class Movable extends Living {
         Cell target;
         if (prey.size() > 0) {
             target = pickCell(prey);
-        }
-        else if (blank.size() > 0) {
-            target = pickCell(blank);
-        }
-        else {
-            return;
-        }
-        
-        if (canEat(target.getTile())) {
             resetLife();
             target.getTile().kill();
+        } else if (blank.size() > 0) {
+            target = pickCell(blank);
+        } else {
+            return;
         }
-        
+
         getCell().setTile(null);
         target.setTile(this);
         setCell(target);
     }
-    
 
 }

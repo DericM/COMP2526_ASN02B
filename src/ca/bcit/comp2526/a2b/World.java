@@ -1,8 +1,8 @@
 package ca.bcit.comp2526.a2b;
 
-import java.util.ArrayList;
-import ca.bcit.comp2526.a2b.tiles.Tile;
+import ca.bcit.comp2526.a2b.tiles.Entity;
 
+import java.util.ArrayList;
 
 /**
  * Represents a World that contains a grid of Cells. Contains a list of movable
@@ -20,9 +20,9 @@ public class World {
     private int rows;
     /* A grid of cells that can contain tiles. */
     private Cell[][] cells;
-    /* A List of movable tiles contained by cells in the grid. */
-    private ArrayList<Tile> takesTurns;
-    
+    /* A List of movable entities contained by cells in the grid. */
+    private ArrayList<Entity> takesTurns;
+
     /**
      * builds a new world with a width and height.
      * 
@@ -35,7 +35,7 @@ public class World {
         cols = width;
         rows = height;
         cells = new Cell[cols][rows];
-        takesTurns = new ArrayList<Tile>();
+        takesTurns = new ArrayList<Entity>();
     }
 
     /**
@@ -56,12 +56,8 @@ public class World {
                 cells[i][j].init();
             }
         }
-        
-        
-        
+
     }
-
-
 
     /*
      * Gets all the empty cells and pick one at random.
@@ -96,48 +92,43 @@ public class World {
     }
 
     /**
-     * Takes a turn for every movable, if the movable dosn't move, then we
-     * remove it from the movable list.
+     * Takes a turn for every entity, if the entity dosn't move, then we remove
+     * it from the list.
      */
     public void takeTurn() {
-        Tile liv;
+        Entity liv;
         int size;
-        System.out.println("--------"+takesTurns.size());
-        
+
         for (int i = 0; i < takesTurns.size(); i++) {
             liv = takesTurns.get(i);
-            if(!liv.isAlive()){
+            if (!liv.isAlive()) {
+                System.out.println("---------" + takesTurns.size());
                 takesTurns.remove(i);
                 i--;
                 liv.getCell().setTile(null);
             }
         }
-        
 
-        
         size = takesTurns.size();
         for (int i = 0; i < size; i++) {
             liv = takesTurns.get(i);
-            if(!liv.isAlive()){
+            if (!liv.isAlive()) {
+                System.out.println("---------" + takesTurns.size());
                 takesTurns.remove(i);
                 liv.getCell().setTile(null);
                 size--;
-            }
-            else{
+            } else {
                 liv.takeTurn();
             }
         }
+        if (takesTurns.size() < 625) {
+            SpawnPool.spawnRand(getRandomEmptyCell());
+            System.out.println("+++++New Entity+++++" + takesTurns.size());
+        }
         
         
-        
-        
-        SpawnPool.spawnRand(getRandomEmptyCell());
     }
-    
-    
-    
-    
-    
+
     /**
      * returns the number of rows.
      * 

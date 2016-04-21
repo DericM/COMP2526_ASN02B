@@ -6,7 +6,8 @@ import javax.swing.Timer;
 
 /**
  * GameFrame.
- * @author  BCIT
+ * 
+ * @author BCIT
  * @version 1.0
  */
 @SuppressWarnings("serial")
@@ -14,6 +15,10 @@ public class GameFrame extends JFrame {
     private final World world;
     private Timer timer;
 
+    /**
+     * constructor.
+     * @param wo the world that will hold our game.
+     */
     public GameFrame(final World wo) {
         world = wo;
         timer = new Timer(50, new TurnTimer(this));
@@ -25,19 +30,20 @@ public class GameFrame extends JFrame {
      */
     public void init() {
         setTitle("Assignment 2b");
-        setLayout(new GridLayout(world.getRowCount(),
-                                 world.getColumnCount()));
+        setLayout(new GridLayout(world.getRowCount(), world.getColumnCount()));
 
         for (int row = 0; row < world.getRowCount(); row++) {
             for (int col = 0; col < world.getColumnCount(); col++) {
-                add(world.getCellAt(row, 
-                                    col));
+                add(world.getCellAt(row, col));
             }
         }
 
         addMouseListener(new TurnListener(this));
     }
 
+    /**
+     * takes a turn.
+     */
     public void takeTurn() {
         world.takeTurn();
         repaint();

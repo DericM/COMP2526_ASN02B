@@ -1,6 +1,6 @@
 package ca.bcit.comp2526.a2b;
 
-import ca.bcit.comp2526.a2b.tiles.Tile;
+import ca.bcit.comp2526.a2b.tiles.Entity;
 
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -8,7 +8,6 @@ import java.awt.Point;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-
 
 /**
  * Represents a Cell that is part of a grid in the world. It has column and a
@@ -28,16 +27,11 @@ public class Cell extends JPanel {
     /** The world containing the cell. */
     private World world;
     /** The tile contained in the cell. */
-    private Tile tile;
+    private Entity tile;
 
-    
+    /** List of adjacent cells. */
     private ArrayList<Cell> adj;
-    
-    
-    
-    
-    
-    
+
     /**
      * Construct a new cell.
      * 
@@ -63,9 +57,6 @@ public class Cell extends JPanel {
         setBorder(BorderFactory.createLineBorder(Color.black));
         adj = getAdjecentCells();
     }
-    
-    
-
 
     /*
      * Returns a list of adjacent tiles.
@@ -87,9 +78,6 @@ public class Cell extends JPanel {
         return adj;
     }
 
-
-
-
     /*
      * Check if cell at given coordinates is in the world and is not the current
      * cell.
@@ -101,22 +89,18 @@ public class Cell extends JPanel {
      * @return True if cell exists, false if not.
      */
     private boolean cellExists(int col, int row) {
-        return !(col < 0 
-                || row < 0 
-                || col >= world.getRowCount() 
-                || row >= world.getColumnCount()
-                || (col == this.col && row == this.row)
-                );
+        return !(col < 0 || row < 0 || col >= world.getRowCount() || row >= world.getColumnCount()
+                || (col == this.col && row == this.row));
     }
 
     /**
      * Return true if t can be eaten this cells tile.
      * 
-     * @param ti
+     * @param tile
      *            the tile that will get eaten.
      * @return True if it can be eaten, False if not.
      */
-    public boolean eat(Tile tile) {
+    public boolean eat(Entity tile) {
         if (this.tile == null) {
             return false;
         }
@@ -128,7 +112,7 @@ public class Cell extends JPanel {
      * 
      * @return the cells tile.
      */
-    public Tile getTile() {
+    public Entity getTile() {
         return tile;
     }
 
@@ -138,7 +122,10 @@ public class Cell extends JPanel {
      * @param ti
      *            the new tile to be set.
      */
-    public void setTile(Tile ti) {
+    public void setTile(Entity ti) {
+        if (tile != null) {
+            tile.kill();
+        }
         removeAll();
         tile = ti;
         if (tile != null) {
@@ -147,17 +134,24 @@ public class Cell extends JPanel {
         revalidate();
     }
 
-    
-    public ArrayList<Cell> getAdjCells(){
+    /**
+     * returns the adj cells.
+     * 
+     * @return the adj cells.
+     */
+    public ArrayList<Cell> getAdjCells() {
         return adj;
     }
-    
+
+    /**
+     * Returns the world that contains the entity.
+     * 
+     * @return the world.
+     */
     public World getWorld() {
         return world;
     }
-    
-    
-    
+
     /**
      * Returns a Point with the coordinates of the cell.
      * 
